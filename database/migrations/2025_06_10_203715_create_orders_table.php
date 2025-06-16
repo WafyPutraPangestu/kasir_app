@@ -17,7 +17,9 @@ return new class extends Migration
             $table->enum('status', ['draft', 'pending', 'paid', 'preparing', 'completed', 'cancelled'])->default('draft');
             $table->decimal('total_amount', 10, 2)->default(0);
             $table->string('snap_token')->nullable(); // untuk Midtrans Snap
-            $table->string('payment_ref')->nullable(); // untuk ID transaksi Midtrans
+            $table->string('payment_ref')->nullable();
+            $table->string('midtrans_order_id')->nullable()->after('payment_ref'); // untuk ID transaksi Midtrans
+            $table->string('payment_type')->nullable();
             $table->timestamps();
         });
     }

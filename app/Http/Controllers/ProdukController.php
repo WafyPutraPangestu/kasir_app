@@ -16,7 +16,7 @@ class ProdukController extends Controller
     public function index()
     {
         // Mengambil produk dengan relasi kategori untuk efisiensi (Eager Loading)
-        $products = Product::with('category')->latest()->get();
+        $products = Product::with('category')->latest()->simplePaginate('5');
         return view('admin.produk.index', compact('products'));
     }
 
@@ -43,6 +43,18 @@ class ProdukController extends Controller
             'description' => 'nullable|string',
             'price' => 'required|integer|min:0',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+        ], [
+            'name.required' => 'Nama produk harus diisi.',
+            'category_id.required' => 'Kategori produk harus dipilih.',
+            'category_id.exists' => 'Kategori yang dipilih tidak valid.',
+            'description.string' => 'Deskripsi harus berupa teks.',
+            'price.required' => 'Harga produk harus diisi.',
+            'price.integer' => 'Harga harus berupa angka bulat.',
+            'image.image' => 'File yang diunggah harus berupa gambar.',
+            'image.mimes' => 'Gambar harus berformat jpeg, png, jpg, gif, atau webp.',
+            'image.max' => 'Ukuran gambar tidak boleh lebih dari 2MB.',
+            'image.dimensions' => 'Gambar harus memiliki dimensi yang valid.',
+
         ]);
 
         // 2. Handle upload gambar
@@ -77,15 +89,30 @@ class ProdukController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'category_id' => 'required|exists:categories,id',
-            'description' => 'nullable|string',
-            'price' => 'required|integer|min:0',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
-            'is_available' => 'sometimes|boolean',
-            'is_active' => 'sometimes|boolean',
-        ]);
+        $validated = $request->validate(
+            [
+                'name' => 'required|string|max:255',
+                'category_id' => 'required|exists:categories,id',
+                'description' => 'nullable|string',
+                'price' => 'required|integer|min:0',
+                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+                'is_available' => 'sometimes|boolean',
+                'is_active' => 'sometimes|boolean',
+            ],
+            [
+                'name.required' => 'Nama produk harus diisi.',
+                'category_id.required' => 'Kategori produk harus dipilih.',
+                'category_id.exists' => 'Kategori yang dipilih tidak valid.',
+                'description.string' => 'Deskripsi harus berupa teks.',
+                'price.required' => 'Harga produk harus diisi.',
+                'price.integer' => 'Harga harus berupa angka bulat.',
+                'image.image' => 'File yang diunggah harus berupa gambar.',
+                'image.mimes' => 'Gambar harus berformat jpeg, png, jpg, gif, atau webp.',
+                'image.max' => 'Ukuran gambar tidak boleh lebih dari 2MB.',
+                'image.dimensions' => 'Gambar harus memiliki dimensi yang valid.',
+
+            ]
+        );
 
         // Handle upload gambar baru jika ada
         if ($request->hasFile('image')) {

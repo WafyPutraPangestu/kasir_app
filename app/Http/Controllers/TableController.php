@@ -8,32 +8,88 @@ use Illuminate\Support\Str;
 
 class TableController extends Controller
 {
+    /**
+     * Display a listing of tables.
+     */
     public function tableindex()
     {
-        $tables = Table::latest()->get(); // Ambil semua data meja, urutkan dari yang terbaru
+        $tables = Table::latest()->simplePaginate(5); // Paginate 5 tables per page
         return view('admin.table-index', compact('tables'));
     }
+
+    /**
+     * Show the form for creating a new table.
+     */
     public function tablecreate()
     {
-        return view('admin.create-table'); // Tampilkan form untuk menambahkan meja baru
+        return view('admin.create-table');
     }
 
+    /**
+     * Store a newly created table in storage.
+     */
     public function tablestore(Request $request)
     {
-        // 1. Validasi input
+        // Validate input
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:tables,name',
-        ]);
+        ], []);
 
-        // 2. Buat data meja baru
+        // Create new table
         Table::create([
             'name' => $validated['name'],
-            'status' => 'available', // Status default
-            'qr_token' => Str::random(32), // 3. Generate token unik untuk QR Code
+            'status' => 'available',
+            'qr_token' => Str::random(32),
         ]);
 
-        // 4. Redirect kembali ke halaman daftar meja dengan pesan sukses
-        return redirect()->route('admin.table-index')
+        // Redirect with success message
+        return redirect()->route('admin.tables.index')
             ->with('success', 'Meja ' . $validated['name'] . ' berhasil ditambahkan.');
+    }
+
+    /**
+     * Show the form for editing the specified table.
+     */
+    public function edit(Table $table)
+    {
+        return view('admin.edit-table', compact('table'));
+    }
+
+    /**
+     * Update the specified table in storage.
+     */
+    public function update(Request $request, Table $table)
+    {
+        // Validate input, allowing the current table's name
+        $validated = $request->validate([
+            'name' => 'required|string|max:255|unique:tables,name,' . $table->id,
+            'status' => 'required|in:available',
+        ]);
+
+        // Update table
+        $table->update([
+            'name' => $validated['name'],
+            'status' => $validated['status'],
+        ]);
+
+        // Redirect with success message
+        return redirect()->route('admin.tables.index')
+            ->with('success', 'Meja ' . $validated['name'] . ' berhasil diperbarui.');
+    }
+
+    /**
+     * Remove the specified table from storage.
+     */
+    public function destroy(Table $table)
+    {
+        // Store table name for success message
+        $tableName = $table->name;
+
+        // Delete table
+        $table->delete();
+
+        // Redirect with success message
+        return redirect()->route('admin.tables.index')
+            ->with('success', 'Meja ' . $tableName . ' berhasil dihapus.');
     }
 }

@@ -11,7 +11,9 @@ class Order extends Model
         'status',
         'total_amount',
         'snap_token',
-        'payment_ref'
+        'payment_ref',
+        'midtrans_order_id',
+        'payment_type'
     ];
 
     public function table()

@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomerMenuController;
 use App\Http\Controllers\OrderController;
@@ -10,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('home');
-});
+})->name('home');
 
 // Route untuk Guest (Login) dan Pelanggan
 Route::middleware(['guest'])->group(function () {
@@ -18,6 +21,27 @@ Route::middleware(['guest'])->group(function () {
     Route::post('/login', [SessionController::class, 'store'])->name('login.store');
 
     Route::get('/menu/{qr_token}', [CustomerMenuController::class, 'showMenuForTable'])->name('customer.menu');
+
+    Route::controller(CartController::class)->prefix('cart')->name('cart.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/add', 'add')->name('add');
+        Route::post('/update', 'update')->name('update');
+        Route::post('/remove', 'remove')->name('remove');
+        Route::get('/count', 'getCartCount')->name('count');
+        Route::post('/clear', 'clear')->name('clear');
+    });
+
+    Route::get('/api/cart', [CartController::class, 'getCartData'])->name('api.cart.data');
+
+    Route::controller(OrderController::class)->group(function () {
+        Route::post('/orders', 'store')->name('orders.store');
+        Route::get('/orders/{order}', 'show')->name('orders.show');
+        Route::post('/orders/{order}/pay', 'createPayment')->name('orders.pay');
+        Route::get('/orders/{order}/status', 'showStatusPage')->name('orders.status');
+        Route::get('/orders/{order}/check-status', 'checkStatus')->name('orders.check-status');
+        Route::get('/customer/success', 'success')->name('customer.success');
+        Route::post('/orders/{order}/cancel', 'cancel')->name('orders.cancel'); // << Tambahan
+    });
 });
 
 
@@ -31,6 +55,9 @@ Route::middleware(['admin', 'auth'])->group(function () {
         Route::get('/table-index', 'tableindex')->name('tables.index');
         Route::get('/create-table', 'tablecreate')->name('tables.create');
         Route::post('/create-table', 'tablestore')->name('tables.store');
+        Route::get('/{table}/table-edit', 'edit')->name('tables.edit');
+        Route::put('/{table}/table-edit', 'update')->name('tables.update');
+        Route::delete('/{table}/table-delete', 'destroy')->name('tables.destroy');
     });
 
     // == INI CONTROLLER PRODUK (SUDAH DILENGKAPI SECARA MANUAL) ==
@@ -64,10 +91,21 @@ Route::middleware(['admin', 'auth'])->group(function () {
         Route::delete('/{category}', 'destroy')->name('destroy');
     });
 
-    // == INI CONTROLLER ORDER (SESUAI KODE ANDA) ==
-    Route::controller(OrderController::class)->group(function () {
-        Route::get('/orders/{order}', 'show')->name('orders.show');
-        Route::post('/orders/{order}/pay', 'createPayment')->name('orders.pay');
-        Route::post('/midtrans/callback', 'handleCallback')->name('midtrans.callback');
+    Route::controller(AdminOrderController::class)->prefix('admin/orders')->name('admin.orders.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/check-new', 'checkNewOrders')->name('checkNew');
+
+        // [MODIFIKASI] Route untuk mengambil data pesanan aktif
+        Route::get('/active', 'getActiveOrders')->name('active');
+
+        // [MODIFIKASI] Route untuk mengambil data riwayat pesanan
+        Route::get('/history', 'getOrderHistory')->name('history');
+
+        Route::get('/{order}', 'show')->name('show');
+        Route::post('/{order}/update-status', 'updateStatus')->name('updateStatus');
+    });
+
+    Route::controller(DashboardController::class)->prefix('admin/dashboard')->name('admin.dashboard.')->group(function () {
+        Route::get('/index', 'index')->name('index');
     });
 });

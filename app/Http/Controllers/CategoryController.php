@@ -30,9 +30,16 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:categories,name',
-        ]);
+        $validated = $request->validate(
+            [
+                'name' => 'required|string|max:255|unique:categories,name',
+            ],
+            [
+                'name.required' => 'Nama kategori harus diisi.',
+                'name.unique' => 'Kategori dengan nama ini sudah ada.',
+                'name.max' => 'Nama kategori tidak boleh lebih dari 255 karakter.',
+            ]
+        );
         $validated['slug'] = Str::slug($validated['name']);
         Category::create($validated);
         return redirect()->route('admin.category.index')->with('success', 'Kategori baru berhasil ditambahkan.');
@@ -54,6 +61,10 @@ class CategoryController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:categories,name,' . $category->id,
+        ], [
+            'name.required' => 'Nama kategori harus diisi.',
+            'name.unique' => 'Kategori dengan nama ini sudah ada.',
+            'name.max' => 'Nama kategori tidak boleh lebih dari 255 karakter.',
         ]);
         $validated['slug'] = Str::slug($validated['name']);
         $category->update($validated);
