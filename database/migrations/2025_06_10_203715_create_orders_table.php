@@ -12,13 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('orders', function (Blueprint $table) {
-            $table->id(); // atau $table->uuid('id')->primary(); jika ingin pakai UUID
+            $table->bigIncrements('id'); // BIGINT UNSIGNED AUTO_INCREMENT
             $table->foreignId('table_id')->constrained('tables')->onDelete('cascade');
             $table->enum('status', ['draft', 'pending', 'paid', 'preparing', 'completed', 'cancelled'])->default('draft');
             $table->decimal('total_amount', 10, 2)->default(0);
             $table->string('snap_token')->nullable(); // untuk Midtrans Snap
             $table->string('payment_ref')->nullable();
-            $table->string('midtrans_order_id')->nullable()->after('payment_ref'); // untuk ID transaksi Midtrans
+            $table->string('midtrans_order_id')->nullable();
+            // untuk ID transaksi Midtrans
             $table->string('payment_type')->nullable();
             $table->timestamps();
         });

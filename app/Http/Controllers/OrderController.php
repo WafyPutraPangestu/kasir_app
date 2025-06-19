@@ -15,9 +15,9 @@ class OrderController extends Controller
   public function __construct()
   {
     \Midtrans\Config::$serverKey = config('midtrans.server_key');
-    \Midtrans\Config::$isProduction = config('midtrans.is_production');
-    \Midtrans\Config::$isSanitized = config('midtrans.is_sanitized');
-    \Midtrans\Config::$is3ds = config('midtrans.is_3ds');
+    \Midtrans\Config::$isProduction = false;
+    \Midtrans\Config::$isSanitized = true;
+    \Midtrans\Config::$is3ds = true;
   }
 
   public function store(Request $request)
