@@ -1,3 +1,17 @@
 *
 !private/
+!public/
+!storage/
+!storage/app/
+!storage/app/public/
+!storage/app/public/products/
+!storage/app/public/products/**
+!storage/app/public/products/*.jpg
+!storage/app/public/products/*.png
+!storage/app/public/products/*.gif
+!storage/app/public/products/*.jpeg
+!storage/app/public/products/*.webp
+!storage/app/public/products/*.svg
+!storage/app/public/products/*.avif
+!storage/app/public/products/*.bmp
 !.gitignore
