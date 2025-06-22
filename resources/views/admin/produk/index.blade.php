@@ -201,7 +201,7 @@
         </div>
     </div>
 
-    @push('styles')
+    {{-- @push('styles')
     <style>
         /* Custom pagination styles to match the theme */
         .pagination {
@@ -242,37 +242,34 @@
             }
         }
     </style>
-    @endpush
+    @endpush --}}
 
     @push('scripts')
     <script>
-        // Show initial notifications if they exist
+        // Toast Notifications
         @if (session('success'))
-            showToast('{{ session("success") }}', 'success');
+            showToast(@json(session("success")), 'success');
         @endif
         @if (session('error'))
-            showToast('{{ session("error") }}', 'error');
+            showToast(@json(session("error")), 'error');
         @endif
-
-        // Toast notification function
+    
         function showToast(message, type = 'success') {
             const toastContainer = document.getElementById('toast-container');
             const toastId = 'toast-' + Date.now();
             
             const bgColor = type === 'success' ? 'bg-green-500' : 'bg-red-500';
-            const icon = type === 'success' ? 
-                '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>' :
-                '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path></svg>';
-
+            const icon = type === 'success'
+                ? `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>`
+                : `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path></svg>`;
+    
             const toast = document.createElement('div');
             toast.id = toastId;
             toast.className = `${bgColor} text-white px-4 sm:px-6 py-3 sm:py-4 rounded-lg shadow-lg transform translate-x-full transition-transform duration-300 ease-in-out max-w-xs sm:max-w-sm`;
             toast.innerHTML = `
                 <div class="flex items-center justify-between">
                     <div class="flex items-center">
-                        <div class="flex-shrink-0">
-                            ${icon}
-                        </div>
+                        <div class="flex-shrink-0">${icon}</div>
                         <div class="ml-3">
                             <p class="text-xs sm:text-sm font-medium">${message}</p>
                         </div>
@@ -284,62 +281,55 @@
                     </button>
                 </div>
             `;
-
+    
             toastContainer.appendChild(toast);
-
-            // Trigger animation
-            setTimeout(() => {
-                toast.classList.remove('translate-x-full');
-            }, 100);
-
-            // Auto dismiss after 5 seconds
-            setTimeout(() => {
-                dismissToast(toastId);
-            }, 5000);
+            setTimeout(() => toast.classList.remove('translate-x-full'), 100);
+            setTimeout(() => dismissToast(toastId), 5000);
         }
-
+    
         function dismissToast(toastId) {
             const toast = document.getElementById(toastId);
             if (toast) {
                 toast.classList.add('translate-x-full');
-                setTimeout(() => {
-                    toast.remove();
-                }, 300);
+                setTimeout(() => toast.remove(), 300);
             }
         }
-
-        // Delete confirmation modal
+    
+        // Delete Confirmation Modal
         let deleteFormId = null;
-
+    
         function showDeleteConfirmation(productId, productName) {
             deleteFormId = `delete-form-${productId}`;
             const modal = document.getElementById('deleteModal');
             const message = document.getElementById('deleteMessage');
-            
+    
             message.innerHTML = `Apakah Anda yakin ingin menghapus produk "<strong>${productName}</strong>"? Tindakan ini tidak dapat dibatalkan.`;
-            document.getElementById('confirmDelete').style.display = 'inline-block';
-            
             modal.classList.remove('hidden');
         }
-
-        document.getElementById('cancelDelete').addEventListener('click', function() {
+    
+        document.getElementById('cancelDelete').addEventListener('click', () => {
             document.getElementById('deleteModal').classList.add('hidden');
             deleteFormId = null;
         });
-
-        document.getElementById('confirmDelete').addEventListener('click', function() {
+    
+        document.getElementById('confirmDelete').addEventListener('click', () => {
             if (deleteFormId) {
-                document.getElementById(deleteFormId).submit();
+                const form = document.getElementById(deleteFormId);
+                if (form) {
+                    form.submit();
+                } else {
+                    alert("Form tidak ditemukan.");
+                }
             }
         });
-
-        // Close modal when clicking outside
-        document.getElementById('deleteModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                this.classList.add('hidden');
+    
+        document.getElementById('deleteModal').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) {
+                e.currentTarget.classList.add('hidden');
                 deleteFormId = null;
             }
         });
     </script>
     @endpush
+    
 </x-layout>

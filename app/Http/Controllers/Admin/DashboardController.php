@@ -10,6 +10,7 @@ use App\Models\OrderItem;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -40,17 +41,34 @@ class DashboardController extends Controller
         // Pesanan pending
         $pendingOrders = Order::where('status', 'pending')->count();
 
-        // Revenue 7 hari terakhir untuk chart
+        // Mengambil data revenue 7 hari terakhir
+        $startDate = Carbon::now()->subDays(6)->startOfDay();
+        $endDate = Carbon::now()->endOfDay();
+
+        $revenueData = Order::whereBetween('created_at', [$startDate, $endDate])
+            ->whereIn('status', ['completed', 'paid'])
+            ->select(
+                DB::raw('DATE(created_at) as order_date'),
+                DB::raw('SUM(total_amount) as revenue')
+            )
+            ->groupBy('order_date')
+            ->get()
+            ->keyBy(function ($item) {
+                // Pastikan key adalah string Y-m-d
+                return Carbon::parse($item->order_date)->format('Y-m-d');
+            });
+
         $revenueChart = [];
         for ($i = 6; $i >= 0; $i--) {
             $date = Carbon::now()->subDays($i);
-            $revenue = Order::whereDate('created_at', $date)
-                ->whereIn('status', ['completed', 'paid'])
-                ->sum('total_amount');
+            $dateString = $date->format('Y-m-d');
+
+            // PERBAIKAN: Cek dulu apakah data ada sebelum mengambil properti 'revenue'
+            $dailyData = $revenueData->get($dateString);
 
             $revenueChart[] = [
-                'date' => $date->format('M d'),
-                'revenue' => $revenue
+                'date' => $dateString,
+                'revenue' => $dailyData ? $dailyData->revenue : 0,
             ];
         }
 
@@ -63,7 +81,7 @@ class DashboardController extends Controller
             ->get();
 
         // Pesanan terbaru
-        $recentOrders = Order::with(['table', 'items'])
+        $recentOrders = Order::with(['table', 'items.product'])
             ->orderBy('created_at', 'desc')
             ->limit(5)
             ->get();
