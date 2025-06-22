@@ -40,13 +40,11 @@ class CartController extends Controller
                     ];
                 })->values(),
                 'subtotal' => $subtotal,
-                'total' => $subtotal, // sama dengan subtotal, karena tanpa pajak
+                'total' => $subtotal,
                 'totalQty' => (int) Cart::count()
             ]
         ]);
     }
-
-
     public function index()
     {
         return view('customer.menu', [
@@ -180,7 +178,7 @@ class CartController extends Controller
                     ];
                 })->values(),
                 'subtotal' => (float) Cart::subtotal(0, '.', ''),
-                'total' => (float) Cart::subtotal(0, '.', ''), // sama dengan subtotal, karena tanpa pajak
+                'total' => (float) Cart::subtotal(0, '.', ''),
                 'totalQty' => (int) Cart::count()
             ]
         ]);

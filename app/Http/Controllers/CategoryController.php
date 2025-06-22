@@ -8,26 +8,17 @@ use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
-    /**
-     * Menampilkan daftar semua kategori.
-     */
     public function index()
     {
         $categories = Category::withCount('products')->latest()->get();
         return view('admin.category.index', compact('categories'));
     }
 
-    /**
-     * Menampilkan form untuk membuat kategori baru.
-     */
     public function create()
     {
         return view('admin.category.create');
     }
 
-    /**
-     * Menyimpan kategori baru ke database.
-     */
     public function store(Request $request)
     {
         $validated = $request->validate(
@@ -45,18 +36,11 @@ class CategoryController extends Controller
         return redirect()->route('admin.category.index')->with('success', 'Kategori baru berhasil ditambahkan.');
     }
 
-    /**
-     * Menampilkan form untuk mengedit kategori.
-     */
     public function edit(Category $category)
     {
         return view('admin.category.edit', compact('category'));
     }
 
-
-    /**
-     * Memperbarui data kategori.
-     */
     public function update(Request $request, Category $category)
     {
         $validated = $request->validate([
@@ -71,9 +55,6 @@ class CategoryController extends Controller
         return redirect()->route('admin.category.index')->with('success', 'Kategori berhasil diperbarui.');
     }
 
-    /**
-     * Menghapus kategori.
-     */
     public function destroy(Category $category)
     {
         if ($category->products()->count() > 0) {

@@ -13,8 +13,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/persist@3.x.x/dist/cdn.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     
-    {{-- Pustaka Tambahan (jQuery, Flatpickr, Toastify) --}}
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
@@ -26,7 +25,7 @@
     @stack('styles')
 </head>
 <body class="bg-gray-50 min-h-screen">
-    <!-- Navigation akan muncul di semua halaman admin -->
+    
         <x-navigation /> 
 
     <main class="flex-grow">    

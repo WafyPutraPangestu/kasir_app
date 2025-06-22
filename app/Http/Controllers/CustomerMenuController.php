@@ -12,7 +12,6 @@ class CustomerMenuController extends Controller
     {
         $table = Table::where('qr_token', $qr_token)->firstOrFail();
 
-        // Simpan table_id dan table_name di session
         Session::put('table_id', $table->id);
         Session::put('table_name', $table->name);
 

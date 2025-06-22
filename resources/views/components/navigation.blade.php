@@ -1,18 +1,14 @@
-{{--
-    File: resources/views/components/navigation.blade.php
-    Deskripsi: Perbaikan syntax error pada Blade directive.
---}}
 <nav class="bg-white shadow-sm" x-data="{ mobileMenuOpen: false, profileDropdownOpen: false }">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-16">
 
-            <!-- Kolom 1: Logo (Kiri) -->
+            
             <div class="flex-1 flex justify-start">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
                         <a href="{{ route('home') }}" class="flex items-center space-x-3">
                             <div class="bg-green-600 rounded-lg p-2 flex items-center justify-center">
-                                <!-- Ikon Kopi (Heroicons) -->
+                                
                                 <svg class="w-7 h-7 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c.251.023.501.05.75.082a12.023 12.023 0 018.25 3.188m-8.25-3.188c-1.28.32-2.486.84-3.5 1.534m-3.5-1.534a12.016 12.016 0 016.25-1.815M3.75 5.625c.348-.19.71-.355 1.086-.492M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5.25 5.25l-2.437-2.438" />
                                 </svg>
@@ -23,7 +19,7 @@
                 </div>
             </div>
 
-            <!-- Kolom 2: Tautan Navigasi (Tengah) -->
+            
             <div class="hidden md:flex justify-center">
                 <div class="flex items-baseline space-x-6">
                     @guest
@@ -63,9 +59,9 @@
                 </div>
             </div>
 
-            <!-- Kolom 3: Auth & Tombol Mobile (Kanan) -->
+            
             <div class="flex-1 flex justify-end items-center">
-                <!-- Auth Desktop -->
+                
                 <div class="hidden md:flex items-center">
                     @guest
                         <a href="{{ route('login') }}" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200">
@@ -73,7 +69,7 @@
                         </a>
                     @endguest
                     @auth
-                        <!-- Profile dropdown -->
+                        
                         <div class="ml-3 relative">
                             <div>
                                 <button @click="profileDropdownOpen = !profileDropdownOpen" class="max-w-xs bg-white flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
@@ -109,7 +105,7 @@
                         </div>
                     @endauth
                 </div>
-                <!-- Tombol menu mobile -->
+                
                 <div class="-mr-2 flex md:hidden">
                     <button @click="mobileMenuOpen = !mobileMenuOpen" type="button" class="bg-white inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" aria-controls="mobile-menu" aria-expanded="false">
                         <span class="sr-only">Open main menu</span>
@@ -125,7 +121,7 @@
         </div>
     </div>
 
-    <!-- Menu Mobile -->
+    
     <div x-show="mobileMenuOpen" style="display: none;" class="md:hidden" id="mobile-menu">
         <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
              @can('admin')
@@ -136,8 +132,7 @@
                 <x-nav-link-mobile :href="route('admin.tables.index')" :active="request()->routeIs('admin.tables.*')">Tables</x-nav-link-mobile>
              @else
                 <a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'bg-green-50 text-green-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }} block px-3 py-2 rounded-md text-base font-medium">Home</a>
-             @endcan {{-- PERBAIKAN: Mengganti @endguest menjadi @endcan --}}
-        </div>
+             @endcan         </div>
         
         @auth
             <div class="pt-4 pb-3 border-t border-gray-200">

@@ -9,22 +9,16 @@ use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
-    /**
-     * Menampilkan halaman dasbor pesanan utama.
-     */
     public function index(Request $request)
     {
-        // Filter untuk tanggal (sekarang digunakan untuk tab Riwayat)
         $startDate = $request->get('start_date', Carbon::today()->subDays(7)->format('Y-m-d'));
         $endDate = $request->get('end_date', Carbon::today()->format('Y-m-d'));
 
-        // [MODIFIKASI] Mengambil pesanan yang butuh tindakan (pending, paid, preparing)
         $activeOrders = Order::with(['table', 'items.product'])
             ->whereIn('status', ['pending', 'paid', 'preparing'])
             ->orderBy('created_at', 'desc')
             ->get();
 
-        // [MODIFIKASI] Mengambil pesanan yang sudah selesai/final untuk tab riwayat
         $historyOrders = Order::with(['table', 'items.product'])
             ->whereIn('status', ['completed', 'cancelled'])
             ->whereBetween('created_at', [
@@ -34,7 +28,6 @@ class OrderController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        // Statistik hari ini tetap sama
         $today = Carbon::today();
         $todayStats = [
             'total_orders' => Order::whereDate('created_at', $today)->count(),
@@ -49,7 +42,6 @@ class OrderController extends Controller
                 ->whereDate('created_at', $today)->count()
         ];
 
-        // [MODIFIKASI] Kirim variabel baru ke view
         return view('admin.orders.index', compact(
             'activeOrders',
             'historyOrders',
@@ -59,12 +51,8 @@ class OrderController extends Controller
         ));
     }
 
-    /**
-     * Mengupdate status pesanan.
-     */
     public function updateStatus(Request $request, Order $order)
     {
-        // Validasi tidak perlu diubah
         $request->validate([
             'status' => 'required|in:draft,pending,paid,preparing,completed,cancelled'
         ]);
@@ -86,9 +74,6 @@ class OrderController extends Controller
         }
     }
 
-    /**
-     * Menampilkan detail pesanan.
-     */
     public function show(Order $order)
     {
         try {
@@ -99,15 +84,11 @@ class OrderController extends Controller
         }
     }
 
-    /**
-     * Mengecek pesanan baru (termasuk yang baru dibayar).
-     */
     public function checkNewOrders()
     {
         try {
             $lastCheck = session('last_order_check', now()->subMinutes(5));
 
-            // [MODIFIKASI] Cek pesanan baru dengan status draft, pending, dan paid
             $newOrdersCount = Order::where('created_at', '>', $lastCheck)
                 ->whereIn('status', ['draft', 'pending', 'paid'])
                 ->count();
@@ -124,9 +105,6 @@ class OrderController extends Controller
         }
     }
 
-    /**
-     * [MODIFIKASI & GANTI NAMA] API untuk mengambil pesanan aktif.
-     */
     public function getActiveOrders()
     {
         try {
@@ -141,9 +119,6 @@ class OrderController extends Controller
         }
     }
 
-    /**
-     * [MODIFIKASI & GANTI NAMA] API untuk mengambil riwayat pesanan (laporan).
-     */
     public function getOrderHistory(Request $request)
     {
         try {
@@ -151,7 +126,7 @@ class OrderController extends Controller
             $endDate = $request->get('end_date', Carbon::today()->format('Y-m-d'));
 
             $reports = Order::with(['table', 'items.product'])
-                ->whereIn('status', ['completed', 'cancelled']) // Hanya yang sudah final
+                ->whereIn('status', ['completed', 'cancelled'])
                 ->whereBetween('created_at', [
                     Carbon::parse($startDate)->startOfDay(),
                     Carbon::parse($endDate)->endOfDay()

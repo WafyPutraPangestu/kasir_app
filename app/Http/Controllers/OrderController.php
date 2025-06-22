@@ -86,7 +86,6 @@ class OrderController extends Controller
     }
 
     try {
-      // Buat order_id unik untuk Midtrans
       $midtransOrderId = 'ORDER-' . $order->id . '-' . time() . '-' . Str::random(4);
 
       $params = [
@@ -102,7 +101,7 @@ class OrderController extends Controller
 
       $snapToken = \Midtrans\Snap::getSnapToken($params);
       $order->snap_token = $snapToken;
-      $order->midtrans_order_id = $midtransOrderId; // Simpan order_id Midtrans
+      $order->midtrans_order_id = $midtransOrderId;
       $order->save();
 
       return response()->json([
@@ -114,8 +113,6 @@ class OrderController extends Controller
       return response()->json(['error' => $e->getMessage()], 500);
     }
   }
-
-
   public function showStatusPage(Order $order)
   {
     return view('customer.order-status', compact('order'));
@@ -131,7 +128,6 @@ class OrderController extends Controller
     }
 
     try {
-      // Gunakan midtrans_order_id untuk pengecekan status
       $orderIdToCheck = $order->midtrans_order_id ?? $order->payment_ref;
 
       if (!$orderIdToCheck) {
@@ -154,8 +150,6 @@ class OrderController extends Controller
 
       if ($newStatus !== $order->status) {
         $order->status = $newStatus;
-
-        // Simpan transaction_id tanpa menghilangkan midtrans_order_id
         if (!empty($midtransStatus->transaction_id)) {
           $order->payment_ref = $midtransStatus->transaction_id;
         }
@@ -226,9 +220,6 @@ class OrderController extends Controller
       'message' => 'Pesanan tidak bisa dibatalkan.'
     ], 400);
   }
-
-
-
   public function success(Request $request)
   {
     return view('customer.success', [

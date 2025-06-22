@@ -13,7 +13,7 @@ class TableController extends Controller
      */
     public function tableindex()
     {
-        $tables = Table::latest()->simplePaginate(5); // Paginate 5 tables per page
+        $tables = Table::latest()->simplePaginate(5);
         return view('admin.table-index', compact('tables'));
     }
 
@@ -30,19 +30,19 @@ class TableController extends Controller
      */
     public function tablestore(Request $request)
     {
-        // Validate input
+
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:tables,name',
         ], []);
 
-        // Create new table
+
         Table::create([
             'name' => $validated['name'],
             'status' => 'available',
             'qr_token' => Str::random(32),
         ]);
 
-        // Redirect with success message
+
         return redirect()->route('admin.tables.index')
             ->with('success', 'Meja ' . $validated['name'] . ' berhasil ditambahkan.');
     }
@@ -66,13 +66,13 @@ class TableController extends Controller
             'status' => 'required|in:available',
         ]);
 
-        // Update table
+
         $table->update([
             'name' => $validated['name'],
             'status' => $validated['status'],
         ]);
 
-        // Redirect with success message
+
         return redirect()->route('admin.tables.index')
             ->with('success', 'Meja ' . $validated['name'] . ' berhasil diperbarui.');
     }
@@ -82,13 +82,13 @@ class TableController extends Controller
      */
     public function destroy(Table $table)
     {
-        // Store table name for success message
+
         $tableName = $table->name;
 
-        // Delete table
+
         $table->delete();
 
-        // Redirect with success message
+
         return redirect()->route('admin.tables.index')
             ->with('success', 'Meja ' . $tableName . ' berhasil dihapus.');
     }
