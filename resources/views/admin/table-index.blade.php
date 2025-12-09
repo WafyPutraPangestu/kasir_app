@@ -1,24 +1,22 @@
 <x-layout>
+    <div class="flex flex-col px-8 py-8 bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600 rounded-xl sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 transition-all duration-300">
+        <div>
+            <h1 class="text-2xl sm:text-3xl font-bold text-white mb-2">Manajemen Meja</h1>
+            <p class="text-sm sm:text-base text-white">Kelola meja restoran Anda dengan mudah</p>
+        </div>
+        <a href="{{ route('admin.tables.create') }}"
+            class="inline-flex items-center px-4 sm:px-6 py-2 sm:py-3 bg-white text-teal-600 hover:bg-teal-50 border border-transparent rounded-lg font-semibold text-sm shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2">
+            <svg class="w-4 sm:w-5 h-4 sm:h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+            </svg>
+            Tambah Meja
+        </a>
+    </div>
     <div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 py-8 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-7xl mx-auto">
-
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-                <div>
-                    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Manajemen Meja</h1>
-                    <p class="text-sm sm:text-base text-gray-600">Kelola meja restoran Anda dengan mudah</p>
-                </div>
-                <a href="{{ route('admin.tables.create') }}"
-                    class="inline-flex items-center px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 border border-transparent rounded-xl font-medium text-sm text-white shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                    <svg class="w-4 sm:w-5 h-4 sm:h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                    </svg>
-                    Tambah Meja
-                </a>
-            </div>
+        <div class="">
             <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-4"></div>
             <div class="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
-
                 <div class="bg-gradient-to-r from-gray-50 to-blue-50 px-4 sm:px-6 py-4 border-b border-gray-200">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center space-x-4">
@@ -44,21 +42,30 @@
                                 class="border border-gray-200 rounded-lg p-4 sm:p-6 flex flex-col items-center text-center bg-white shadow-sm hover:shadow-md transition-shadow duration-200">
                                 <h3 class="text-sm sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-4">
                                     {{ $table->name }}</h3>
-                                <div class="mb-2 sm:mb-4 bg-white p-2 rounded-md shadow-sm border border-gray-100">
+                                <div id="qr-code-{{ $table->id }}" class="mb-2 sm:mb-4 bg-white p-2 rounded-md shadow-sm border border-gray-100">
                                     {!! QrCode::size(120)->margin(1)->generate(route('customer.menu', $table->qr_token)) !!}
                                 </div>
-                                <p class="text-xs sm:text-sm text-gray-500 mb-2 sm:mb-4">
+                                {{-- <p class="text-xs sm:text-sm text-gray-500 mb-2 sm:mb-4">
                                     Status:
                                     <span
                                         class="inline-flex items-center px-2 py-0.5 rounded-full text-xs sm:text-sm font-medium 
                                         {{ $table->status === 'available' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
                                         {{ ucfirst($table->status) }}
                                     </span>
-                                </p>
-                                <div class="flex space-x-2">
+                                </p> --}}
+                                
+                                <!-- Download QR Button -->
+                                <button onclick="downloadQRCode('{{ $table->id }}', '{{ $table->name }}')"
+                                    class="w-full mb-3 inline-flex items-center justify-center px-3 py-2 border border-green-300 rounded-lg text-xs sm:text-sm font-medium text-green-700 bg-green-50 hover:bg-green-100 hover:border-green-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                                    </svg>
+                                    Download QR
+                                </button>
 
+                                <div class="flex space-x-2 w-full">
                                     <a href="{{ route('admin.tables.edit', $table->id) }}"
-                                        class="inline-flex items-center px-2 sm:px-3 py-1 sm:py-2 border border-indigo-300 rounded-lg text-xs sm:text-sm font-medium text-indigo-700 bg-indigo-50 hover:bg-indigo-100 hover:border-indigo-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                                        class="flex-1 inline-flex items-center justify-center px-2 sm:px-3 py-1 sm:py-2 border border-indigo-300 rounded-lg text-xs sm:text-sm font-medium text-indigo-700 bg-indigo-50 hover:bg-indigo-100 hover:border-indigo-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                                         <svg class="w-3 sm:w-4 h-3 sm:h-4 mr-0 sm:mr-1" fill="none"
                                             stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -70,7 +77,7 @@
 
                                     <button type="button"
                                         onclick="showDeleteConfirmation('{{ $table->id }}', '{{ $table->name }}')"
-                                        class="inline-flex items-center px-2 sm:px-3 py-1 sm:py-2 border border-red-300 rounded-lg text-xs sm:text-sm font-medium text-red-700 bg-red-50 hover:bg-red-100 hover:border-red-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
+                                        class="flex-1 inline-flex items-center justify-center px-2 sm:px-3 py-1 sm:py-2 border border-red-300 rounded-lg text-xs sm:text-sm font-medium text-red-700 bg-red-50 hover:bg-red-100 hover:border-red-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
                                         <svg class="w-3 sm:w-4 h-3 sm:h-4 mr-0 sm:mr-1" fill="none"
                                             stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -259,6 +266,68 @@
                         toast.remove();
                     }, 300);
                 }
+            }
+
+            // Download QR Code function
+            function downloadQRCode(tableId, tableName) {
+                const qrContainer = document.getElementById(`qr-code-${tableId}`);
+                const svgElement = qrContainer.querySelector('svg');
+                
+                if (!svgElement) {
+                    showToast('QR Code tidak ditemukan', 'error');
+                    return;
+                }
+
+                // Create canvas
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const svgData = new XMLSerializer().serializeToString(svgElement);
+                
+                // Set canvas size (increase for better quality)
+                const size = 400;
+                canvas.width = size;
+                canvas.height = size;
+
+                // Create image from SVG
+                const img = new Image();
+                const blob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+
+                img.onload = function() {
+                    // Fill white background
+                    ctx.fillStyle = 'white';
+                    ctx.fillRect(0, 0, size, size);
+                    
+                    // Draw QR code
+                    ctx.drawImage(img, 0, 0, size, size);
+                    
+                    // Add table name below QR
+                    ctx.fillStyle = 'black';
+                    ctx.font = 'bold 24px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(tableName, size / 2, size - 20);
+
+                    // Convert to blob and download
+                    canvas.toBlob(function(blob) {
+                        const link = document.createElement('a');
+                        link.download = `QR_${tableName.replace(/\s+/g, '_')}.png`;
+                        link.href = URL.createObjectURL(blob);
+                        link.click();
+                        
+                        // Cleanup
+                        URL.revokeObjectURL(url);
+                        URL.revokeObjectURL(link.href);
+                        
+                        showToast(`QR Code ${tableName} berhasil diunduh!`, 'success');
+                    });
+                };
+
+                img.onerror = function() {
+                    showToast('Gagal mengunduh QR Code', 'error');
+                    URL.revokeObjectURL(url);
+                };
+
+                img.src = url;
             }
 
             // Delete confirmation modal

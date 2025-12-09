@@ -7,6 +7,8 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Foundation\Http\Events\RequestHandled;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -32,5 +34,7 @@ class AppServiceProvider extends ServiceProvider
         }
         Carbon::setLocale('id');
         date_default_timezone_set(env('APP_TIMEZONE', 'Asia/Jakarta'));
+
+      
     }
 }

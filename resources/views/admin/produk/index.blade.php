@@ -1,25 +1,24 @@
 <x-layout>
-    <div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 py-8 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-7xl mx-auto">
-
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-                <div>
-                    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Manajemen Produk</h1>
-                    <p class="text-sm sm:text-base text-gray-600">Kelola produk Anda dengan mudah</p>
-                </div>
-                <a href="{{ route('admin.produk.create') }}"
-                    class="inline-flex items-center px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 border border-transparent rounded-xl font-medium text-sm text-white shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                    <svg class="w-4 sm:w-5 h-4 sm:h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                    </svg>
-                    Tambah Produk
-                </a>
-            </div>
+    <div class="flex flex-col px-8 py-8 bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600 rounded-xl sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 transition-all duration-300">
+        <div>
+            <h1 class="text-2xl sm:text-3xl font-bold text-white mb-2">Manajemen Produk</h1>
+            <p class="text-sm sm:text-base text-white/90">Kelola produk Anda dengan mudah</p>
+        </div>
+        <a href="{{ route('admin.produk.create') }}"
+            class="inline-flex items-center px-4 sm:px-6 py-2 sm:py-3 bg-white text-teal-600 hover:bg-teal-50 border border-transparent rounded-lg font-semibold text-sm shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2">
+            <svg class="w-4 sm:w-5 h-4 sm:h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+            </svg>
+            Tambah Produk
+        </a>
+    </div>
+    <div class="min-h-screen   px-4 sm:px-6 lg:px-8">
+        <div class="">
             <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-4"></div>
-            <div class="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+            <div class="  overflow-hidden">
 
-                <div class="bg-gradient-to-r from-gray-50 to-blue-50 px-4 sm:px-6 py-4 border-b border-gray-200">
+                <div class=" px-4 sm:px-6 py-4  border-gray-200">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center space-x-4">
                             <div class="p-2 bg-indigo-100 rounded-lg">
@@ -38,7 +37,7 @@
                 </div>
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
+                        <thead class="">
                             <tr>
                                 <th scope="col"
                                     class="px-4 sm:px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
@@ -65,9 +64,9 @@
                                 </th>
                             </tr>
                         </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
+                        <tbody class=" divide-y divide-gray-200">
                             @forelse ($products as $product)
-                                <tr class="hover:bg-gray-50 transition-colors duration-150">
+                                <tr class="hover:bg-white transition-colors duration-150">
                                     <td class="px-4 sm:px-6 py-4 whitespace-nowrap">
                                         <img src="{{ $product->image ? asset('storage/' . $product->image) : 'https://via.placeholder.com/80' }}"
                                             alt="{{ $product->name }}"
@@ -130,7 +129,7 @@
                                                         d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
                                                     </path>
                                                 </svg>
-                                                <span class="hidden sm:inline">Edit</span>
+                                                <span class="hidden cursor-grab sm:inline">Edit</span>
                                             </a>
                                             <button type="button"
                                                 onclick="showDeleteConfirmation('{{ $product->id }}', '{{ $product->name }}')"
@@ -142,7 +141,7 @@
                                                         d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
                                                     </path>
                                                 </svg>
-                                                <span class="hidden sm:inline">Hapus</span>
+                                                <span class="hidden cursor-grab sm:inline">Hapus</span>
                                             </button>
                                         </div>
                                         <form id="delete-form-{{ $product->id }}"
@@ -179,7 +178,7 @@
                     </table>
                 </div>
                 <div
-                    class="px-4 sm:px-6 py-4 bg-indigo-600 border border-transparent  hover:bg-indigo-700 transition-colors duration-200">
+                    class="px-4 divide-y divide-gray-200 sm:px-6 py-4 border-t border-gray-200 hover:bg-white transition-colors duration-150">
                     {{ $products->links() }}
                 </div>
             </div>
@@ -201,11 +200,11 @@
                 <p class="text-xs sm:text-sm text-gray-500 mb-4" id="deleteMessage"></p>
                 <div class="flex justify-center space-x-2 sm:space-x-3">
                     <button id="cancelDelete"
-                        class="px-3 sm:px-4 py-1.5 sm:py-2 bg-gray-300 text-gray-700 rounded-lg text-xs sm:text-sm hover:bg-gray-400 transition-colors duration-200">
+                        class="px-3 sm:px-4 py-1.5 cursor-grab sm:py-2 bg-gray-300 text-gray-700 rounded-lg text-xs sm:text-sm hover:bg-gray-400 transition-colors duration-200">
                         Batal
                     </button>
                     <button id="confirmDelete"
-                        class="px-3 sm:px-4 py-1.5 sm:py-2 bg-red-600 text-white rounded-lg text-xs sm:text-sm hover:bg-red-700 transition-colors duration-200">
+                        class="px-3 sm:px-4 py-1.5 sm:py-2 cursor-grab bg-red-600 text-white rounded-lg text-xs sm:text-sm hover:bg-red-700 transition-colors duration-200">
                         Hapus
                     </button>
                 </div>

@@ -1,27 +1,28 @@
 <x-layout>
-    <div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 py-8 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-7xl mx-auto">
+    <div class="flex flex-col px-8 py-8 bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600 rounded-xl sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 transition-all duration-300">
+        <div>
+            <h1 class="text-3xl font-bold text-white mb-2">Manajemen Kategori</h1>
+            <p class="text-white">Kelola kategori produk dengan mudah</p>
+        </div>
+        <a href="{{ route('admin.category.create') }}"
+            class="inline-flex items-center px-4 sm:px-6 py-2 sm:py-3 bg-white text-teal-600 hover:bg-teal-50 border border-transparent rounded-lg font-semibold text-sm shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+            </svg>
+            Tambah Kategori
+        </a>
+    </div>
+    <div class="min-h-screen  py-8 px-4 sm:px-6 lg:px-8">
+        <div class="">
 
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-                <div>
-                    <h1 class="text-3xl font-bold text-gray-900 mb-2">Manajemen Kategori</h1>
-                    <p class="text-gray-600">Kelola kategori produk dengan mudah</p>
-                </div>
-                <a href="{{ route('admin.category.create') }}"
-                    class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 border border-transparent rounded-xl font-medium text-sm text-white shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                    </svg>
-                    Tambah Kategori
-                </a>
-            </div>
+         
             <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-4"></div>
-            <div class="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
-                <div class="bg-gradient-to-r from-gray-50 to-blue-50 px-6 py-4 border-b border-gray-200">
+            <div class="">
+                <div class="">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center space-x-4">
-                            <div class="p-2 bg-indigo-100 rounded-lg">
+                            <div class="p-2 ">
                                 <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor"
                                     viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -36,9 +37,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="overflow-x-auto">
+                <div class="overflow-x-auto mt-6">
                     <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
+                        <thead class="">
                             <tr>
                                 <th scope="col"
                                     class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
@@ -60,8 +61,8 @@
                                         </svg>
                                     </div>
                                 </th>
-                                <th scope="col" class="relative px-6 py-4">
-                                    <span class="sr-only">Aksi</span>
+                                <th scope="col" class=" px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    <span class=" ">Aksi</span>
                                 </th>
                             </tr>
                         </thead>

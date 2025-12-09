@@ -11,7 +11,7 @@ return [
     | You can find your API key and other credentials in your Midtrans account.
     |
     */
-
+  'client_key' => env('MIDTRANS_CLIENT_KEY'),
   'server_key' => env('MIDTRANS_SERVER_KEY'),
   'is_production' => env('MIDTRANS_IS_PRODUCTION'),
   'isSanitized' => env('MIDTRANS_IS_SANITIZED'),

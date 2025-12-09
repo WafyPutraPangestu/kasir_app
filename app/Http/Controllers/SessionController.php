@@ -30,7 +30,7 @@ class SessionController extends Controller
         if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
 
-            return redirect()->intended('/')->with('success', 'Selamat datang kembali!');
+            return redirect()->intended('admin/dashboard/index')->with('success', 'Selamat datang kembali!');
         }
 
         throw ValidationException::withMessages([

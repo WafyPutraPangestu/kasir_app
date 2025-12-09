@@ -14,6 +14,7 @@ class OrderController extends Controller
 {
   public function __construct()
   {
+    \Midtrans\Config::$clientKey = config('midtrans.client_key');
     \Midtrans\Config::$serverKey = config('midtrans.server_key');
     \Midtrans\Config::$isProduction = false;
     \Midtrans\Config::$isSanitized = true;
@@ -81,37 +82,60 @@ class OrderController extends Controller
 
   public function createPayment(Order $order)
   {
-    if ($order->status !== 'pending') {
-      return response()->json(['message' => 'Order tidak dapat dibayar'], 400);
-    }
-
-    try {
-      $midtransOrderId = 'ORDER-' . $order->id . '-' . time() . '-' . Str::random(4);
-
-      $params = [
-        'transaction_details' => [
-          'order_id' => $midtransOrderId,
-          'gross_amount' => (int) round($order->total_amount),
-        ],
-        'customer_details' => [
-          'first_name' => 'Meja ' . $order->table->name,
-          'product' => 'Pesanan Meja ' . $order->items->pluck('product.name')->implode(', '),
-        ],
-      ];
-
-      $snapToken = \Midtrans\Snap::getSnapToken($params);
-      $order->snap_token = $snapToken;
-      $order->midtrans_order_id = $midtransOrderId;
-      $order->save();
-
-      return response()->json([
-        'snap_token' => $snapToken,
-        'redirect_url' => route('orders.status', $order)
-      ]);
-    } catch (\Exception $e) {
-      Log::error('Payment error: ' . $e->getMessage());
-      return response()->json(['error' => $e->getMessage()], 500);
-    }
+      if ($order->status !== 'pending') {
+          return response()->json(['message' => 'Order tidak dapat dibayar'], 400);
+      }
+  
+      try {
+          $midtransOrderId = 'ORDER-' . $order->id . '-' . time() . '-' . Str::random(4);
+  
+          // 1. SIAPKAN ITEM DETAILS (Supaya muncul daftar kopi di struk Midtrans)
+          $itemDetails = [];
+          foreach ($order->items as $item) {
+              $itemDetails[] = [
+                  'id'       => $item->product_id,
+                  'price'    => (int) $item->price,
+                  'quantity' => $item->quantity,
+                  'name'     => substr($item->product->name, 0, 50), // Midtrans membatasi panjang nama 50 karakter
+              ];
+          }
+  
+          // 2. HITUNG TOTAL DARI ITEM (Wajib sama persis dengan gross_amount)
+          // Midtrans sangat ketat. Total item harus == gross_amount.
+          // Kita hitung ulang gross_amount dari itemDetails biar aman.
+          $grossAmount = 0;
+          foreach ($itemDetails as $item) {
+              $grossAmount += ($item['price'] * $item['quantity']);
+          }
+  
+          $params = [
+              'transaction_details' => [
+                  'order_id' => $midtransOrderId,
+                  'gross_amount' => $grossAmount, // Gunakan hasil hitungan item
+              ],
+              // Masukkan item_details di sini
+              'item_details' => $itemDetails,
+              'customer_details' => [
+                  'first_name' => 'Meja', // Nama depan
+                  'last_name'  => $order->table->name, // Nama belakang (Nama Meja)
+                  // 'product' => ... (Hapus ini, Midtrans tidak membaca field 'product' di sini)
+              ],
+          ];
+  
+          $snapToken = \Midtrans\Snap::getSnapToken($params);
+          
+          $order->snap_token = $snapToken;
+          $order->midtrans_order_id = $midtransOrderId;
+          $order->save();
+  
+          return response()->json([
+              'snap_token' => $snapToken,
+              'redirect_url' => route('orders.status', $order)
+          ]);
+      } catch (\Exception $e) {
+          Log::error('Payment error: ' . $e->getMessage());
+          return response()->json(['error' => $e->getMessage()], 500);
+      }
   }
   public function showStatusPage(Order $order)
   {

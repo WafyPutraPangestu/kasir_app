@@ -14,11 +14,13 @@ class OrderController extends Controller
         $startDate = $request->get('start_date', Carbon::today()->subDays(7)->format('Y-m-d'));
         $endDate = $request->get('end_date', Carbon::today()->format('Y-m-d'));
 
+        // Paginasi untuk active orders
         $activeOrders = Order::with(['table', 'items.product'])
             ->whereIn('status', ['pending', 'paid', 'preparing'])
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->paginate(10); // 10 items per page
 
+        // Paginasi untuk history orders
         $historyOrders = Order::with(['table', 'items.product'])
             ->whereIn('status', ['completed', 'cancelled'])
             ->whereBetween('created_at', [
@@ -26,7 +28,7 @@ class OrderController extends Controller
                 Carbon::parse($endDate)->endOfDay()
             ])
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->paginate(15); // 15 items per page
 
         $today = Carbon::today();
         $todayStats = [
@@ -105,15 +107,29 @@ class OrderController extends Controller
         }
     }
 
-    public function getActiveOrders()
+    public function getActiveOrders(Request $request)
     {
         try {
+            $page = $request->get('page', 1);
+            $perPage = $request->get('per_page', 10);
+
             $orders = Order::with(['table', 'items.product'])
                 ->whereIn('status', ['pending', 'paid', 'preparing'])
                 ->orderBy('created_at', 'desc')
-                ->get();
+                ->paginate($perPage, ['*'], 'page', $page);
 
-            return response()->json(['success' => true, 'orders' => $orders]);
+            return response()->json([
+                'success' => true,
+                'orders' => $orders->items(),
+                'pagination' => [
+                    'current_page' => $orders->currentPage(),
+                    'last_page' => $orders->lastPage(),
+                    'per_page' => $orders->perPage(),
+                    'total' => $orders->total(),
+                    'from' => $orders->firstItem(),
+                    'to' => $orders->lastItem()
+                ]
+            ]);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Gagal mengambil pesanan aktif: ' . $e->getMessage()], 500);
         }
@@ -124,6 +140,8 @@ class OrderController extends Controller
         try {
             $startDate = $request->get('start_date', Carbon::today()->format('Y-m-d'));
             $endDate = $request->get('end_date', Carbon::today()->format('Y-m-d'));
+            $page = $request->get('page', 1);
+            $perPage = $request->get('per_page', 15);
 
             $reports = Order::with(['table', 'items.product'])
                 ->whereIn('status', ['completed', 'cancelled'])
@@ -132,9 +150,20 @@ class OrderController extends Controller
                     Carbon::parse($endDate)->endOfDay()
                 ])
                 ->orderBy('created_at', 'desc')
-                ->get();
+                ->paginate($perPage, ['*'], 'page', $page);
 
-            return response()->json(['success' => true, 'reports' => $reports]);
+            return response()->json([
+                'success' => true,
+                'reports' => $reports->items(),
+                'pagination' => [
+                    'current_page' => $reports->currentPage(),
+                    'last_page' => $reports->lastPage(),
+                    'per_page' => $reports->perPage(),
+                    'total' => $reports->total(),
+                    'from' => $reports->firstItem(),
+                    'to' => $reports->lastItem()
+                ]
+            ]);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Gagal mengambil riwayat pembayaran: ' . $e->getMessage()], 500);
         }

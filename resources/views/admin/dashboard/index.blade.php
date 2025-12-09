@@ -1,21 +1,16 @@
 <x-layout>
-    <div class="min-h-screen bg-gray-50" x-data="dashboardManager()">
-        <div class="bg-white shadow-sm border-b">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="py-4 flex items-center justify-between">
-                    <div>
-                        <h1 class="text-2xl font-bold text-gray-900">Dashboard Admin</h1>
-                        <p class="text-gray-600 mt-1 text-sm">Selamat datang kembali! Berikut ringkasan coffeeshop hari
-                            ini.</p>
-                    </div>
-                    <div class="text-right">
-                        <p class="text-sm text-gray-500">{{ \Carbon\Carbon::now()->format('l, d F Y') }}</p>
-                        <p class="text-lg font-semibold text-gray-900">{{ \Carbon\Carbon::now()->format('H:i') }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+   <div class="flex flex-col px-8 py-8 bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600 rounded-xl sm:flex-row justify-between items-start sm:items-center gap-4  transition-all duration-300">
+    <div>
+        <h1 class="text-2xl sm:text-3xl font-bold text-white mb-2">Dashboard Admin</h1>
+        <p class="text-sm sm:text-base text-white/90">Selamat datang kembali! Berikut ringkasan coffeeshop hari ini.</p>
+    </div>
+    <div class="text-left sm:text-right">
+        <p class="text-sm text-white/90">{{ \Carbon\Carbon::now()->format('l, d F Y') }}</p>
+        <p class="text-lg sm:text-xl font-semibold text-white mt-1">{{ \Carbon\Carbon::now()->format('H:i') }}</p>
+    </div>
+</div>
+    <div class="min-h-screen bg-green-50" x-data="dashboardManager()">
+        <div class=" px-4 sm:px-6 lg:px-8 py-6">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-8">
 
                 <div class="bg-white rounded-lg shadow p-5 hover:shadow-md transition-shadow">

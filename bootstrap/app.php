@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\ChekAdmin;
+use App\Http\Middleware\CspMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -14,7 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-
+        $middleware->prepend(CspMiddleware::class);
         // Alias middleware Anda tetap di sini
         $middleware->alias([
             'admin' => ChekAdmin::class
