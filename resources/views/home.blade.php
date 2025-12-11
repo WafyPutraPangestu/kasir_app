@@ -245,7 +245,7 @@
 
     <div class="py-20 bg-gray-50">
         <div class="container mx-auto text-center">
-            <h2 class="text-3xl font-bold text-gray-800">Visit Us Today!</h2>
+            <h2 class="text-3xl font-bold text-gray-800">About Me</h2>
             <p class="text-gray-600 mt-4">Experience the perfect blend of taste and ambiance</p>
         </div>
     </div>
