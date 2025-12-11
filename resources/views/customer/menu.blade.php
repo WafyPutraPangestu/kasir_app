@@ -4,13 +4,13 @@
 
         <div class="flex">
             <aside
-                class="hidden lg:flex lg:flex-col fixed top-0 left-0 h-full bg-gradient-to-b from-slate-100 to-orange-50 border-r border-slate-200 z-20 transition-all duration-300 ease-in-out"
+                class="hidden lg:flex lg:flex-col fixed top-0 left-0 h-full bg-gradient-to-b from-slate-100 to-green-50 border-r border-slate-200 z-20 transition-all duration-300 ease-in-out"
                 :class="isSidebarOpen ? 'w-64 xl:w-72 p-6' : 'w-0 p-0 border-none'">
                 <header class="text-left mb-8 flex-shrink-0 whitespace-nowrap overflow-hidden"
                     :class="isSidebarOpen ? 'opacity-100' : 'opacity-0'" style="transition-delay: 150ms;">
                     <h1 class="text-2xl font-bold tracking-tight text-slate-800">Menu Pilihan Kami</h1>
                     <p class="mt-2 text-sm text-slate-600">
-                        Pesanan untuk <span class="font-bold text-orange-600">Meja {{ $table->name }}</span>
+                        Pesanan untuk <span class="font-bold text-green-600">Meja {{ $table->name }}</span>
                     </p>
                 </header>
                 <nav class="space-y-1 flex-grow overflow-y-auto whitespace-nowrap"
@@ -20,9 +20,9 @@
                             <a :href="'#category-{{ $category->id }}'"
                                 @click.prevent="document.getElementById('category-{{ $category->id }}').scrollIntoView({ behavior: 'smooth', block: 'start' })"
                                 :class="{
-                                    'bg-orange-200 text-orange-800 font-bold': activeCategory ===
+                                    'bg-green-200 text-green-800 font-bold': activeCategory ===
                                         {{ $category->id }},
-                                    'text-slate-700 hover:text-orange-800 hover:bg-orange-100': activeCategory !==
+                                    'text-slate-700 hover:text-green-800 hover:bg-green-100': activeCategory !==
                                         {{ $category->id }}
                                 }"
                                 class="group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200">
@@ -53,11 +53,11 @@
 
             <div class="w-full transition-all duration-300 ease-in-out"
                 :class="isSidebarOpen ? 'lg:pl-64 xl:pl-72' : 'lg:pl-0'">
-                <header class="lg:hidden w-full mb-6 bg-gradient-to-r from-slate-100 to-orange-100 shadow-md">
+                <header class="lg:hidden w-full mb-6 bg-gradient-to-r from-slate-100 to-green-100 shadow-md">
                     <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 text-center">
                         <h1 class="text-2xl font-extrabold tracking-tight text-slate-800">Menu</h1>
                         <p class="mt-1 text-sm text-slate-600">
-                            Pesanan untuk <span class="font-bold text-orange-600">Meja {{ $table->name }}</span>
+                            Pesanan untuk <span class="font-bold text-green-600">Meja {{ $table->name }}</span>
                         </p>
                     </div>
                 </header>
@@ -67,8 +67,7 @@
                         @forelse ($categories as $category)
                             @if ($category->products->isNotEmpty())
                                 <section :id="'category-{{ $category->id }}'" class="scroll-mt-24 mb-16">
-                                    <h2
-                                        class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-orange-500 pb-2">
+                                    <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-green-500 pb-2">
                                         {{ $category->name }}</h2>
                                     <div class="grid grid-cols-2 gap-4 sm:gap-6"
                                         :class="isSidebarOpen ? 'md:grid-cols-2 lg:grid-cols-3' :
@@ -95,11 +94,11 @@
                                                     <div
                                                         class="flex flex-col sm:flex-row justify-between items-start sm:items-center mt-auto">
                                                         <p
-                                                            class="text-lg sm:text-xl font-bold text-orange-600 mb-2 sm:mb-0">
+                                                            class="text-lg sm:text-xl font-bold text-green-600 mb-2 sm:mb-0">
                                                             {{ 'Rp ' . number_format($product->price, 0, ',', '.') }}
                                                         </p>
                                                         <button @click="addToCart({{ $product->id }})"
-                                                            class="w-full sm:w-auto inline-flex items-center justify-center bg-orange-500 text-white px-3 py-2 sm:px-4 rounded-lg font-semibold shadow-sm hover:bg-orange-600 transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 disabled:bg-slate-300 disabled:cursor-not-allowed disabled:transform-none"
+                                                            class="w-full sm:w-auto inline-flex items-center justify-center bg-green-500 text-white px-3 py-2 sm:px-4 rounded-lg font-semibold shadow-sm hover:bg-green-600 transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:bg-slate-300 disabled:cursor-not-allowed disabled:transform-none"
                                                             :disabled="!
                                                             {{ $product->is_available && $product->is_active ? 'true' : 'false' }}">
                                                             <svg xmlns="http://www.w3.org/2000/svg"
@@ -171,7 +170,7 @@
                 x-transition:enter-start="translate-y-24" x-transition:enter-end="translate-y-0"
                 class="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-sm border-t border-slate-200 p-3 z-40 shadow-t-xl">
                 <button @click="isCartOpen = true"
-                    class="w-full bg-orange-500 text-white py-3 px-4 rounded-xl font-semibold flex justify-between items-center shadow-lg hover:bg-orange-600 transition-colors">
+                    class="w-full bg-green-500 text-white py-3 px-4 rounded-xl font-semibold flex justify-between items-center shadow-lg hover:bg-green-600 transition-colors">
                     <span>
                         <span x-text="cartCount"></span> Item di Keranjang
                     </span>
@@ -210,7 +209,7 @@
             :class="{
                 'bg-gradient-to-r from-teal-500 to-green-500': notification
                     .type === 'success',
-                'bg-gradient-to-r from-red-500 to-orange-500': notification
+                'bg-gradient-to-r from-red-500 to-green-500': notification
                     .type === 'error'
             }"
             x-cloak>
@@ -239,7 +238,7 @@
                                 <div class="flex-1 flex items-end justify-between text-sm">
                                     <div class="flex items-center mt-2">
                                         <button @click="updateQuantity(item, item.qty - 1)"
-                                            class="text-slate-500 hover:text-orange-600 p-1 rounded-full hover:bg-slate-100 transition-colors"><svg
+                                            class="text-slate-500 hover:text-green-600 p-1 rounded-full hover:bg-slate-100 transition-colors"><svg
                                                 xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"
                                                 viewBox="0 0 20 20" fill="currentColor">
                                                 <path fill-rule="evenodd"
@@ -249,7 +248,7 @@
                                         <span class="mx-2 w-8 text-center font-medium text-slate-700"
                                             x-text="item.qty"></span>
                                         <button @click="updateQuantity(item, item.qty + 1)"
-                                            class="text-slate-500 hover:text-orange-600 p-1 rounded-full hover:bg-slate-100 transition-colors"><svg
+                                            class="text-slate-500 hover:text-green-600 p-1 rounded-full hover:bg-slate-100 transition-colors"><svg
                                                 xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"
                                                 viewBox="0 0 20 20" fill="currentColor">
                                                 <path fill-rule="evenodd"
@@ -293,7 +292,7 @@
                 <p class="mt-1 text-sm text-slate-500">Sudah termasuk pajak dan layanan.</p>
                 <div class="mt-6">
                     <button @click="submitOrder()"
-                        class="w-full flex items-center justify-center rounded-md border border-transparent bg-orange-500 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-orange-600 transition-colors">
+                        class="w-full flex items-center justify-center rounded-md border border-transparent bg-green-500 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-green-600 transition-colors">
                         Pesan Sekarang
                     </button>
                 </div>

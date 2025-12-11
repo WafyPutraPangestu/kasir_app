@@ -13,14 +13,10 @@ class OrderController extends Controller
     {
         $startDate = $request->get('start_date', Carbon::today()->subDays(7)->format('Y-m-d'));
         $endDate = $request->get('end_date', Carbon::today()->format('Y-m-d'));
-
-        // Paginasi untuk active orders
         $activeOrders = Order::with(['table', 'items.product'])
             ->whereIn('status', ['pending', 'paid', 'preparing'])
             ->orderBy('created_at', 'desc')
-            ->paginate(10); // 10 items per page
-
-        // Paginasi untuk history orders
+            ->paginate(10);
         $historyOrders = Order::with(['table', 'items.product'])
             ->whereIn('status', ['completed', 'cancelled'])
             ->whereBetween('created_at', [
@@ -28,22 +24,20 @@ class OrderController extends Controller
                 Carbon::parse($endDate)->endOfDay()
             ])
             ->orderBy('created_at', 'desc')
-            ->paginate(15); // 15 items per page
-
+            ->paginate(15);
         $today = Carbon::today();
         $todayStats = [
             'total_orders' => Order::whereDate('created_at', $today)->count(),
             'total_revenue' => Order::whereDate('created_at', $today)
                 ->whereIn('status', ['completed', 'paid'])
                 ->sum('total_amount'),
-            'pending_orders' => Order::where('status', 'pending')
+            'pending_orders' => Order::where('status', 'paid')
                 ->whereDate('created_at', $today)->count(),
             'draft_orders' => Order::where('status', 'draft')
                 ->whereDate('created_at', $today)->count(),
             'completed_orders' => Order::where('status', 'completed')
                 ->whereDate('created_at', $today)->count()
         ];
-
         return view('admin.orders.index', compact(
             'activeOrders',
             'historyOrders',
@@ -52,17 +46,14 @@ class OrderController extends Controller
             'endDate'
         ));
     }
-
     public function updateStatus(Request $request, Order $order)
     {
         $request->validate([
             'status' => 'required|in:draft,pending,paid,preparing,completed,cancelled'
         ]);
-
         try {
             $oldStatus = $order->status;
             $order->update(['status' => $request->status]);
-
             return response()->json([
                 'success' => true,
                 'message' => "Status pesanan berhasil diubah dari {$oldStatus} ke {$request->status}",
@@ -75,7 +66,6 @@ class OrderController extends Controller
             ], 500);
         }
     }
-
     public function show(Order $order)
     {
         try {
@@ -85,18 +75,14 @@ class OrderController extends Controller
             return response()->json(['success' => false, 'message' => 'Gagal mengambil detail pesanan: ' . $e->getMessage()], 500);
         }
     }
-
     public function checkNewOrders()
     {
         try {
             $lastCheck = session('last_order_check', now()->subMinutes(5));
-
             $newOrdersCount = Order::where('created_at', '>', $lastCheck)
                 ->whereIn('status', ['draft', 'pending', 'paid'])
                 ->count();
-
             session(['last_order_check' => now()]);
-
             return response()->json([
                 'hasNew' => $newOrdersCount > 0,
                 'count' => $newOrdersCount,
@@ -106,18 +92,15 @@ class OrderController extends Controller
             return response()->json(['hasNew' => false, 'count' => 0, 'error' => $e->getMessage()], 500);
         }
     }
-
     public function getActiveOrders(Request $request)
     {
         try {
             $page = $request->get('page', 1);
             $perPage = $request->get('per_page', 10);
-
             $orders = Order::with(['table', 'items.product'])
                 ->whereIn('status', ['pending', 'paid', 'preparing'])
                 ->orderBy('created_at', 'desc')
                 ->paginate($perPage, ['*'], 'page', $page);
-
             return response()->json([
                 'success' => true,
                 'orders' => $orders->items(),
@@ -134,7 +117,6 @@ class OrderController extends Controller
             return response()->json(['success' => false, 'message' => 'Gagal mengambil pesanan aktif: ' . $e->getMessage()], 500);
         }
     }
-
     public function getOrderHistory(Request $request)
     {
         try {
@@ -142,7 +124,6 @@ class OrderController extends Controller
             $endDate = $request->get('end_date', Carbon::today()->format('Y-m-d'));
             $page = $request->get('page', 1);
             $perPage = $request->get('per_page', 15);
-
             $reports = Order::with(['table', 'items.product'])
                 ->whereIn('status', ['completed', 'cancelled'])
                 ->whereBetween('created_at', [
@@ -151,7 +132,6 @@ class OrderController extends Controller
                 ])
                 ->orderBy('created_at', 'desc')
                 ->paginate($perPage, ['*'], 'page', $page);
-
             return response()->json([
                 'success' => true,
                 'reports' => $reports->items(),
